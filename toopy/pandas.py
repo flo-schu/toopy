@@ -2,10 +2,10 @@ import pandas as pd
 import itertools as it
 
 def read_csv_list(filenames, kwargs={}):
-    df = pd.DataFrame()
+    dfs = []
     for filename in filenames:
-        df = df.append(pd.read_csv(filename, **kwargs))
-    return df
+        dfs.append(pd.read_csv(filename, **kwargs))
+    return pd.concat(dfs)
 
 def expand_grid(data_dict):
     """Create a dataframe from every combination of given values."""
