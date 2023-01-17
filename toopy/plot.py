@@ -8,6 +8,8 @@ from matplotlib import ticker
 from matplotlib.patches import Rectangle
 from copy import copy
 
+cm = 1/2.56  # convert cm to inch
+
 def create_axes(gs, fig, ncol, nrow, rstart=0, cstart=0):
     """
     this function creates axes in some area of the gridspec. It is useful
@@ -83,7 +85,10 @@ def replace_pos_with_label(pos, label, axis):
     axis.set_xticklabels(labels)
 
 def line_break(line, break_from=0.0002, break_until=0.002, 
-    break_width=0.1, slant=1.5, plot_line_break=True):
+    break_width=0.1, slant=1.5, plot_line_break=True, replace_zero=True):
+    """
+    should be called after setting the axis to
+    """
     assert isinstance(line, list), "line must be a list, just use the output of plt.plot(...)"
     axis = line[0]._axes
     fig = axis.figure
@@ -97,10 +102,14 @@ def line_break(line, break_from=0.0002, break_until=0.002,
         x_before_break = x[before]
         x_after_break = x[after]
 
-        x_min_new = 10 ** np.round(np.log10(x_after_break[0] / 2))
-        x_max_new = x_after_break[0]
-        x_new_before_break = np.linspace(
-            x_min_new, x_max_new, len(x_before_break))
+        x_min_new = 10 ** np.floor(np.log10(sorted(x_after_break)[0] / 2))
+        x_max_new = sorted(x_after_break)[0]
+        
+        if l._linestyle in ("None", " "):
+            x_new_before_break = np.repeat(x_min_new, len(x_before_break))
+        else:
+            x_new_before_break = np.linspace(
+                x_min_new, x_max_new, len(x_before_break))
 
         y = l.get_ydata()
         y_before_break = y[before]
@@ -139,7 +148,7 @@ def line_break(line, break_from=0.0002, break_until=0.002,
                 linewidth=.5, 
                 color="black", zorder=3.1)
 
-    ymin_new, _ = axis.get_xlim()
+    ymin_new = x_new_before_break.min()
     replace_pos_with_label(pos=ymin_new, label=0.0, axis=axis)
 
     # add axis break
