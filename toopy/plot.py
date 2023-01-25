@@ -5,10 +5,15 @@ from matplotlib.dates import num2date, datestr2num, drange
 import numpy as np
 from matplotlib import transforms
 from matplotlib import ticker
+from matplotlib import rc
 from matplotlib.patches import Rectangle
 from copy import copy
 
 cm = 1/2.56  # convert cm to inch
+
+def publication_settings(fontsize=12):
+    rc("font", family='sans-serif', size=fontsize)
+
 
 def create_axes(gs, fig, ncol, nrow, rstart=0, cstart=0):
     """
