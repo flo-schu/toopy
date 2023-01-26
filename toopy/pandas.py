@@ -4,7 +4,10 @@ import itertools as it
 def read_csv_list(filenames, kwargs={}):
     dfs = []
     for filename in filenames:
-        dfs.append(pd.read_csv(filename, **kwargs))
+        try:
+            dfs.append(pd.read_csv(filename, **kwargs))
+        except UnicodeDecodeError:
+            raise UnicodeDecodeError(f"{filename} contained invalid start byte. Try saving it with utf-8 encoding.")
     return pd.concat(dfs)
 
 def expand_grid(data_dict):
