@@ -11,8 +11,9 @@ from copy import copy
 
 cm = 1/2.56  # convert cm to inch
 
-def publication_settings(fontsize=12):
+def publication_settings(fontsize=12, spines=True):
     rc("font", family='sans-serif', size=fontsize)
+    rc("axes.spines", top=spines, right=spines)
 
 
 def create_axes(gs, fig, ncol, nrow, rstart=0, cstart=0):
