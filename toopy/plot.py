@@ -90,7 +90,7 @@ def replace_pos_with_label(pos, label, axis):
     axis.xaxis.set_major_locator(ticker.FixedLocator(locs))
     axis.set_xticklabels(labels)
 
-def line_break(line, break_from=0.0002, break_until=0.002, 
+def line_break(line, break_from=0.0002, break_until=0.002, break_height=.1,
     break_width=0.1, slant=1.5, plot_line_break=True, replace_zero=True):
     """
     should be called after setting the axis to
@@ -137,8 +137,8 @@ def line_break(line, break_from=0.0002, break_until=0.002,
             line_break_xr = break_until * 1.1
             line_break_width = line_break_xr - line_break_xl
 
-            line_break_yl = y_before_break[-1] * 0.9
-            line_break_yu = y_after_break[0] * 1.1
+            line_break_yl = y_before_break[-1] * (1-break_height)
+            line_break_yu = y_after_break[0] * (1+break_height)
             line_break_height = line_break_yu - line_break_yl
 
             # add line break
