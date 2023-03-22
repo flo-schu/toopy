@@ -177,3 +177,60 @@ def line_break(line, break_from=0.0002, break_until=0.002, break_height=.1,
         [break_until*0.9, break_until*1.1], -0.025, 0.025,
         transform=trans, linewidth=.5,
         color="black", zorder=3.1, clip_on=False)
+
+def letterer(letters="abcdefghijklmnop"):
+    """generator yielding letter labels each time it is called"""
+    for l in letters:
+        yield l
+
+def draw_axis_letter(
+        ax, label, loc=(0.02, 0.98), adjust=("top", "left"),
+        fontdict={"weight": "bold"}, **text_kwargs
+    ):
+    """
+    for additional arguments to text https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.text.html
+    to set up font parameters check 
+    https://matplotlib.org/stable/api/matplotlib_configuration_api.html#matplotlib.rcParams
+    """
+    
+    x, y = loc
+    va, ha = adjust
+    ax.text(
+        x, y, label, 
+        fontdict=fontdict,
+        transform=ax.transAxes, 
+        va=va, 
+        ha=ha,
+        **text_kwargs
+    )
+
+
+
+def legprops(
+        loc=(0.0,1.0), 
+        frameon=False, 
+        margins=False,
+        kwargs={},
+    ):
+        """
+        creates typical legend properties based on location and margins
+        """
+        x, y = loc
+        corner_x = "left" if x < 0.5 else "right"
+        corner_y = "upper" if y > 0.5 else "lower"
+
+        legend_props = dict(
+            loc=f"{corner_y} {corner_x}",
+            bbox_to_anchor=(x, y),
+            frameon=frameon,
+        )
+        if not margins:
+            margin_dict = dict(borderpad=0.0, borderaxespad=0.0)
+            legend_props.update(margin_dict)
+
+        # overwrite keyword arguments given to legend
+        legend_props.update(kwargs)
+
+        return legend_props
+
+    
