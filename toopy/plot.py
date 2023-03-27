@@ -234,3 +234,18 @@ def legprops(
         return legend_props
 
     
+def log(out_tab, msg, newlines=1, mode="a"):
+    """
+    from toopy.plot import log
+    from functools import partial
+    partial(log, out_tab="path/to/table")
+
+    log("first message", mode="a")
+    log("second message")
+    """
+    with open(out_tab, mode) as f:
+        print(msg, file=f, end="\n")
+        for _ in range(newlines):
+            print("", file=f, end="\n")
+
+
