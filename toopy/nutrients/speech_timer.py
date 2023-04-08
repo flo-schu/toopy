@@ -2,8 +2,6 @@ import numpy as np
 import time
 from datetime import timedelta
 import math
-import pyttsx3
-from beepy import beep
 
 class Timer:
 
@@ -16,6 +14,8 @@ class Timer:
     
     
     def __init__(self, cycles = np.inf, timings = {}, prep_time = 10, sps = 1):
+        import pyttsx3
+        from beepy import beep
 
         self.cycles = cycles
         self.steps_cycle = len(timings)
