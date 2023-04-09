@@ -3,10 +3,12 @@ import numpy as np
 from datetime import datetime
 
 class CasyFile:
-    def __init__(self, path, splitfile=[28,1052], correct_dilution=False, verbose=False):
-        with open(path, "r") as f:
+    def __init__(self, path, thresh=0, splitfile=[28,1052], correct_dilution=False, verbose=False, encoding=None):
+        with open(path, "r", encoding=encoding, errors="replace") as f:
+
             raw = f.read().splitlines()
-             
+        
+        self.thresh = thresh
         self.meta(data=raw, split=splitfile)
         self.measurements(data=raw, split=splitfile)
         self.calculations(data=raw, split=splitfile)
@@ -61,6 +63,7 @@ class CasyFile:
         measurements = [i.split("\t") for i in data[split[0]:split[1]]]
         
         self.data = np.array(measurements, dtype=float)
+        self.data[:, 1] = np.where(self.data[:, 1] > self.thresh, self.data[:, 1], 0)
         self.size = self.data[:, 0]
 
     def plot(self, smoothing_kernel=1):
