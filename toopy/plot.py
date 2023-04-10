@@ -7,13 +7,29 @@ from matplotlib import transforms
 from matplotlib import ticker
 from matplotlib import rc
 from matplotlib.patches import Rectangle
+from matplotlib import pyplot as plt
 from copy import copy
 
 cm = 1/2.56  # convert cm to inch
 
-def publication_settings(fontsize=12, spines=True):
+def publication_settings(fontsize=12, spines=True, usetex=False):
+    # you can experiment with stylesheets, but I think I like this approach
+    # much better, because I can customize it as I go.
     rc("font", family='sans-serif', size=fontsize)
     rc("axes.spines", top=spines, right=spines)
+    plt.rcParams["figure.figsize"] = (15*cm, 10*cm)
+    rc('text', usetex=usetex)
+
+def Fig(nrows=1, ncols=1, **kwargs):
+    """
+    create a figure with subplots in cm layout
+    """
+    kwargs = dict(**kwargs)
+    figsize = kwargs.pop("figsize", (15*cm, 10*cm))
+    figsize = (figsize[0]*cm, figsize[1]*cm)
+
+    fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=figsize, **kwargs)
+    return fig, ax
 
 
 def create_axes(gs, fig, ncol, nrow, rstart=0, cstart=0):
