@@ -1,0 +1,16 @@
+name: pymc
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - matplotlib=3.5
+  - numpy=1.23
+  - pandas=1.4
+  - scipy=1.8
+  - xarray=2022.9
+  - pymc=4.2
+  - click=8.1
+  - ca-certificates
+  - openssl
+prefix: /home/flo-schu/miniconda3/envs/pymc
