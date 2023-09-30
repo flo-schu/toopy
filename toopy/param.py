@@ -1,14 +1,14 @@
 
 class Param:
     def __init__(self, value, name="", min=None, max=None, step=None, 
-                 distribution=None):
+                 prior=None):
             self.name = name
             self._type = type(value)
             self._type.__init__(value)
             self.min = self._type(value / 4 if min is None else min)
             self.max = self._type(value * 2 if max is None else max)
             self.step = self._type(1 if step is None else step)
-            self.distribution = distribution
+            self.prior = prior
 
     def ParamClass(self, value):
         kwargs = self.__dict__.copy()
@@ -44,9 +44,9 @@ class Param:
 
 
 class FloatParam(Param, float):
-    def __new__(self, value, name="", min=None, max=None, step=None, distribution=None) -> float:
+    def __new__(self, value, name="", min=None, max=None, step=None, prior=None) -> float:
         return float.__new__(self, value)
 
 class IntParam(Param, int):
-    def __new__(self, value, name="", min=None, max=None, step=None, distriubtion=None) -> int:
+    def __new__(self, value, name="", min=None, max=None, step=None, prior=None) -> int:
         return int.__new__(self, value)
