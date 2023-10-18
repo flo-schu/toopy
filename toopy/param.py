@@ -6,37 +6,37 @@ class Param:
             self.name = name
             self._type = type(value)
             self._type.__init__(value)
-            self.min = self._type(self.minfunc(value, min))
-            self.max = self._type(self.maxfunc(value, min))
-            self.step = self._type(1 if step is None else step)
+            self.min = self._type(self.minfunc(min))
+            self.max = self._type(self.maxfunc(max))
+            self.step = self._type(10**(self.scale(self)-1) if step is None else step)
             self.prior = prior
 
-    def minfunc(self, value, minimum):
+    def minfunc(self, minimum):
         if minimum is not None:
             return minimum
         
-        if value <= 1:
-            minimum = value / 10
+        if self.value <= 1:
+            minimum = self.value / 10
         else:
-            minimum = value / 4
+            minimum = self.value / 4
     
-        return np.round(maximum, np.abs(np.min([0, self.scale])))
+        return np.round(minimum, -self.scale(minimum))
         
-    def maxfunc(self, value, maximum):
+    def maxfunc(self, maximum):
         if maximum is not None:
             return maximum
         
-        if value <= 1:
-            maximum = value * 10
+        if self.value <= 1:
+            maximum = self.value * 10
         else:
-            maximum = value * 2
+            maximum = self.value * 2
             
-        return np.round(maximum, np.abs(np.min([0, self.scale])))
-    
-    @property
-    def scale(self):
-        return self._type(np.log10(np.abs(self)))
-        
+        return np.round(maximum, -self.scale(maximum))
+       
+    @staticmethod
+    def scale(value):
+        return int(np.floor(np.log10(np.abs(value))))
+
     def ParamClass(self, value):
         kwargs = self.__dict__.copy()
         _type = kwargs.pop("_type")
