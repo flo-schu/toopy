@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "toopy"
-version = "0.2.0"
+version = "0.3.0"
 authors = [
   { name="Florian Schunck", email="fluncki@protonmail.com" },
 ]
@@ -33,3 +33,21 @@ where = ["."]  # ["."] by default
 include = ["toopy", "tests"]  # ["."] by default
 exclude = []  # empty by default
 namespaces = true  # true by default
+
+[tool.bumpver]
+current_version = "0.3.0"
+version_pattern = "MAJOR.MINOR.PATCH"
+commit_message = "bump version {old_version} -> {new_version}"
+tag_message = "{new_version}"
+tag_scope = "default"
+pre_commit_hook = ""
+post_commit_hook = ""
+commit = true
+tag = true
+push = true
+
+[tool.bumpver.file_patterns]
+"pyproject.toml" = [
+    'current_version = "{version}"',
+    'version = "{version}"'
+]
