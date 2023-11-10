@@ -26,47 +26,50 @@ def getSystemInfo():
 
 
 def benchmark(func):
+    def decorated_func():
+        exec_time = datetime.now()
+        timefmt = "%Y-%m-%d_%H-%M-%S"
+        exec_time = exec_time.strftime(timefmt)
 
-    exec_time = datetime.now()
-    timefmt = "%Y-%m-%d_%H-%M-%S"
-    exec_time = exec_time.strftime(timefmt)
+        system_info = json.loads(getSystemInfo())
+        benchmark_test = {
+            "time": exec_time,
+        }
 
-    system_info = json.loads(getSystemInfo())
-    benchmark_test = {
-        "time": exec_time,
-    }
+        print(
+            f"Starting Benchmark("
+            f"time={datetime.strptime(benchmark_test['time'], timefmt)}, "
+            ")"
+        )
 
-    print(
-        f"Starting Benchmark("
-        f"time={datetime.strptime(benchmark_test['time'], timefmt)}, "
-        ")"
-    )
+        # Execute benchmark
+        cpu_time_start = time.process_time()
+        wall_time_start = time.time()
 
-    # Execute benchmark
-    cpu_time_start = time.process_time()
-    wall_time_start = time.time()
+        func()
 
-    func()
+        cpu_time_stop = time.process_time()
+        wall_time_stop = time.time()
 
-    cpu_time_stop = time.process_time()
-    wall_time_stop = time.time()
+        # record result of Benchmark
+        cpu_time = cpu_time_stop - cpu_time_start
+        wall_time = wall_time_stop - wall_time_start
 
-    # record result of Benchmark
-    cpu_time = cpu_time_stop - cpu_time_start
-    wall_time = wall_time_stop - wall_time_start
+        result = {
+            "walltime_s": wall_time,
+            "cputime_s": cpu_time,
+        }
 
-    result = {
-        "walltime_s": wall_time,
-        "cputime_s": cpu_time,
-    }
+        # Update Benchmarking results table
+        benchmark_test.update(result)
+        benchmark_test.update(system_info)
 
-    # Update Benchmarking results table
-    benchmark_test.update(result)
-    benchmark_test.update(system_info)
-
-    print(
-        f"Finished Benchmark("
-        f"runtime={result["walltime_s"]}s, "
-        f"cputime={result["cputime_s"]}s, "
-        f"ncores={benchmark_test["sys_ncpu"]}"
-    )
+        print(
+            f"Finished Benchmark("
+            f"runtime={result['walltime_s']}s, "
+            f"cputime={result['cputime_s']}s, "
+            f"ncores={benchmark_test['sys_ncpu']}"
+        )
+        return benchmark_test
+    
+    return decorated_func
