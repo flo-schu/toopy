@@ -70,6 +70,7 @@ class Param:
         return self._type(self)
 
 
+
 class FloatParam(Param, float):
     def __new__(self, value, name="", min=None, max=None, step=None, prior=None) -> float:
         return float.__new__(self, value)
@@ -77,3 +78,41 @@ class FloatParam(Param, float):
 class IntParam(Param, int):
     def __new__(self, value, name="", min=None, max=None, step=None, prior=None) -> int:
         return int.__new__(self, value)
+
+class ArrayParam(Param):
+    def __init__(self, value, name="", min=None, max=None, step=None, 
+                 prior=None):
+        self.name = name
+        self._value = value
+        self.min = self.minfunc(min)
+        self.max = self.maxfunc(max)
+        self.step = 10.0**(self.scale(value)-1) if step is None else step
+        self.prior = prior
+
+    @property
+    def value(self):
+        return self._value
+    
+    @value.setter
+    def value(self, value):
+        self._value = value
+
+    
+    def minfunc(self, minimum):
+        if minimum is not None:
+            return minimum
+        
+        minimum = np.where(self.value <= 1, self.value / 10, self.value / 4)
+        return np.array([np.round(m, -self.scale(m)) for m in minimum])
+        
+    def maxfunc(self, maximum):
+        if maximum is not None:
+            return maximum
+        
+        maximum = np.where(self.value <= 1, self.value * 10, self.value * 2)
+        return np.array([np.round(m, -self.scale(m)) for m in maximum])
+    
+    @staticmethod
+    def scale(value):
+        return np.floor(np.log10(np.abs(value))).astype(int)
+    
